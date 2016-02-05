@@ -14,7 +14,7 @@ from fileinput import filename
 
 class ApkpackagePipeline(object):
     
-    filename="ff.db"
+    filename="apkPackage.db"
     
     def __init__(self):
         self.conn=None

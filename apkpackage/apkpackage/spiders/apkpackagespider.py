@@ -8,6 +8,7 @@ from twisted.test.test_sip import response1
 from scrapy.http import Request
 from string import atoi
 from __builtin__ import str
+from _ast import Str
 
 class ApkpackagespiderSpider(scrapy.Spider):
     name = "apkpackage"
@@ -19,16 +20,20 @@ class ApkpackagespiderSpider(scrapy.Spider):
         #next_link = response_selector.xpath ('//div[@class="panel-footer ex-card-footer text-center"]/ul/li/a[text()="&gt;"]')
         current_link = response_selector.xpath(u'//div[@class="panel-footer ex-card-footer text-center"]/ul//li[@class="active"]/a/@href').extract()[0]       
         all_link = response_selector.xpath(u'//div[@class="panel-footer ex-card-footer text-center"]/ul//li/a/@href').extract()
-        disables = all_link[-2]
-        next_page_num = current_link[current_link.find('=') +1:]
-        next_page_num = atoi(next_page_num) + 1
-        next_page_prefix = current_link[0:current_link.find('=')+1] + str(next_page_num)
-        next_link = "http://www.coolapk.com" + next_page_prefix
-        detail_link = "http://www.coolapk.com"  + current_link      
-                
-        if (cmp(disables, "###") != 0):                
-            yield Request(url=next_link, callback=self.parse)
-        yield self.parsedetail(response)                                              
+        last_link = all_link[-1]
+        current_page_num = current_link[current_link.find('=') + 1:]
+        current_page_num = atoi(current_page_num)
+        last_page_num = last_link[last_link.find('=') + 1:]
+        if cmp(last_page_num, "###") !=0 :
+            last_page_num = atoi(last_page_num)
+            print last_page_num
+            if current_page_num < last_page_num:                
+                current_page_num = current_page_num + 1            
+                next_link = "http://www.coolapk.com" + current_link[0:current_link.find('=')+1] + str(current_page_num)
+                print "next_link" + next_link               
+                yield Request(url=next_link, callback=self.parse)
+            for detail in self.parsedetail(response):
+                yield detail                                                    
         
      
     def parsedetail(self, response):
@@ -38,6 +43,8 @@ class ApkpackagespiderSpider(scrapy.Spider):
             item = ApkpackageItem()
             item['name'] = site.xpath('div/h4/a/text()').extract()
             item['packageName'] = site.xpath('a/@href').extract()
+            yield item 
+            
 
                     
 

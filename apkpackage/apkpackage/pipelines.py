@@ -22,7 +22,7 @@ class ApkpackagePipeline(object):
         dispatcher.connect(self.finalize,signals.engine_stopped)
         
     def process_item(self, item, spider):
-        self.conn.execute('insert into apkpackage values(?,?)', (item['name'][0], item['packageName'][0]))
+        self.conn.execute('insert into apkpackage values(?,?,?,?)', (item['typeid'],item['type'],item['name'][0],item['packageName']))
         return item
     
     def initialize(self):
@@ -39,6 +39,6 @@ class ApkpackagePipeline(object):
             
     def create_table(self, filename):
         conn=sqlite3.connect(filename)
-        conn.execute('create table apkpackage(name text,packagename text)')
+        conn.execute('create table apkpackage(typeid text, type text, name text,packagename text)')
         conn.commit()
         return conn

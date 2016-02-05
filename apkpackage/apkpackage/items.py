@@ -14,4 +14,6 @@ class ApkpackageItem(scrapy.Item):
     # name = scrapy.Field()
     name = Field()
     packageName = Field()
+    type = Field()
+    typeid = Field()
     pass

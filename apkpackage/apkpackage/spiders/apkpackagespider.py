@@ -9,11 +9,13 @@ from scrapy.http import Request
 from string import atoi
 from __builtin__ import str
 from _ast import Str
+import time
 
 class ApkpackagespiderSpider(scrapy.Spider):
     name = "apkpackage"
     allowed_domains = ["coolapk.com"]
-    types = ['sns', 'system', 'desktop', 'themes', 'news', 'network', 'media', 'photography', 'life', 'tools', 'business']
+    #types = ['sns', 'system', 'desktop', 'themes', 'news', 'network', 'media', 'photography', 'life', 'tools', 'business']
+    types = ['sns','media', 'news','shopping']
     start_urls = []
     for type in types:
         start_urls.append("http://www.coolapk.com/apk/" + type)
@@ -21,7 +23,7 @@ class ApkpackagespiderSpider(scrapy.Spider):
     def parse(self, response):    
         response_selector = Selector(response)
         #next_link = response_selector.xpath ('//div[@class="panel-footer ex-card-footer text-center"]/ul/li/a[text()="&gt;"]')
-        current_link = response_selector.xpath(u'//div[@class="panel-footer ex-card-footer text-center"]/ul//li[@class="active"]/a/@href').extract()[0]       
+        current_link = response_selector.xpath(u'//div[@class="panel-footer ex-card-footer text-center"]/ul//li[@class="active"]/a/@href').extract()[0]
         all_link = response_selector.xpath(u'//div[@class="panel-footer ex-card-footer text-center"]/ul//li/a/@href').extract()
         last_link = all_link[-1]
         current_page_num = current_link[current_link.find('=') + 1:]

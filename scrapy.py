@@ -16,6 +16,19 @@ url = 'http://www.pythontab.com/test/demo.zip'
 print "downloading with urllib"
 urllib.urlretrieve(url, "demo.zip")
 '''
+def rename():
+    pattern = re.compile(r'\w+_\w+.png$')
+    filenames = []
+    toberename = []
+    allnames = os.listdir(".")
+    for onename in allnames:
+        if pattern.match(onename):
+            toberename.append(onename)
+    for tobeone in toberename:
+        print tobeone
+        renamed = tobeone.replace("_", ".")
+        print "rename from ->" + tobeone + " to ->" + renamed + "\n"
+        os.rename(tobeone, renamed)
 
 urls_queue = Queue()
 download_queue = Queue()
